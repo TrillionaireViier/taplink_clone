@@ -5,10 +5,11 @@ import Link from 'next/link'
 export const dynamic = 'force-dynamic'
 
 type Props = {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
 }
 
-export default async function SubPage({ params }: Props) {
+export default async function SubPage(props: Props) {
+  const params = await props.params;
   const page = await prisma.page.findUnique({
     where: { slug: params.slug },
     include: {
