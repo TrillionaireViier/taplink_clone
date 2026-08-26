@@ -1,10 +1,20 @@
 import prisma from '@/lib/prisma'
 import { addLink, updateLink, deleteLink, addPage, deletePage } from './actions'
+import { logout } from './login/actions'
+import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
 import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
 
 export default async function AdminPage() {
+  const cookieStore = cookies()
+  const token = cookieStore.get('admin_token')
+  
+  if (!token || token.value !== 'authenticated') {
+    redirect('/admin/login')
+  }
+
   const pages = await prisma.page.findMany({
     orderBy: { createdAt: 'asc' },
     include: { links: { orderBy: { order: 'asc' } } }
@@ -24,7 +34,12 @@ export default async function AdminPage() {
             <h1 className="text-3xl font-bold flex items-center gap-2">
               <span>⚙️</span> Админ Панель
             </h1>
-            <Link href="/" className="text-blue-400 hover:text-blue-300">На главную</Link>
+            <div className="flex gap-4 items-center">
+              <Link href="/" className="text-blue-400 hover:text-blue-300">На главную</Link>
+              <form action={logout}>
+                <button type="submit" className="text-red-400 hover:text-red-300 bg-red-400/10 px-3 py-1.5 rounded-lg border border-red-400/20 text-sm font-medium">Выйти</button>
+              </form>
+            </div>
           </div>
 
           <div className="mb-12">

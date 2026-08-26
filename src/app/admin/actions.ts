@@ -2,8 +2,18 @@
 
 import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
+import { cookies } from 'next/headers'
+
+function requireAuth() {
+  const token = cookies().get('admin_token')
+  if (!token || token.value !== 'authenticated') {
+    throw new Error('Не авторизован')
+  }
+}
 
 export async function addLink(formData: FormData) {
+  requireAuth()
+  
   const title = formData.get('title') as string
   const url = formData.get('url') as string
   const pageIdStr = formData.get('pageId') as string
@@ -33,6 +43,7 @@ export async function addLink(formData: FormData) {
 }
 
 export async function updateLink(id: number, formData: FormData) {
+  requireAuth()
   const title = formData.get('title') as string
   const url = formData.get('url') as string
   
@@ -47,6 +58,7 @@ export async function updateLink(id: number, formData: FormData) {
 }
 
 export async function deleteLink(id: number) {
+  requireAuth()
   await prisma.link.delete({
     where: { id }
   })
@@ -55,6 +67,7 @@ export async function deleteLink(id: number) {
 }
 
 export async function addPage(formData: FormData) {
+  requireAuth()
   const title = formData.get('title') as string
   const slug = formData.get('slug') as string
   
@@ -71,6 +84,7 @@ export async function addPage(formData: FormData) {
 }
 
 export async function deletePage(id: number) {
+  requireAuth()
   await prisma.page.delete({
     where: { id }
   })
