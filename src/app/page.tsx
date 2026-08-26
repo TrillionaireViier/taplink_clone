@@ -44,7 +44,7 @@ export default async function Home() {
 
       {/* Footer Branding */}
       <div className="mt-16 text-slate-500 text-sm">
-        Powered by Taplink Clone
+        Powered by Taplink
       </div>
     </main>
   )
