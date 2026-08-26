@@ -8,7 +8,8 @@ export async function login(formData: FormData) {
   const validPassword = process.env.ADMIN_PASSWORD || '123456'
   
   if (password === validPassword) {
-    cookies().set('admin_token', 'authenticated', {
+    const cookieStore = await cookies()
+    cookieStore.set('admin_token', 'authenticated', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
@@ -21,6 +22,7 @@ export async function login(formData: FormData) {
 }
 
 export async function logout() {
-  cookies().delete('admin_token')
+  const cookieStore = await cookies()
+  cookieStore.delete('admin_token')
   redirect('/admin/login')
 }

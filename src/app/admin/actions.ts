@@ -4,8 +4,9 @@ import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { cookies } from 'next/headers'
 
-function requireAuth() {
-  const token = cookies().get('admin_token')
+async function requireAuth() {
+  const cookieStore = await cookies()
+  const token = cookieStore.get('admin_token')
   if (!token || token.value !== 'authenticated') {
     throw new Error('Не авторизован')
   }
@@ -19,7 +20,7 @@ function normalizeUrl(url: string) {
 }
 
 export async function addLink(formData: FormData) {
-  requireAuth()
+  await requireAuth()
   
   const title = formData.get('title') as string
   let url = formData.get('url') as string
@@ -51,7 +52,7 @@ export async function addLink(formData: FormData) {
 }
 
 export async function updateLink(id: number, formData: FormData) {
-  requireAuth()
+  await requireAuth()
   const title = formData.get('title') as string
   let url = formData.get('url') as string
   url = normalizeUrl(url)
@@ -67,7 +68,7 @@ export async function updateLink(id: number, formData: FormData) {
 }
 
 export async function deleteLink(id: number) {
-  requireAuth()
+  await requireAuth()
   await prisma.link.delete({
     where: { id }
   })
@@ -76,7 +77,7 @@ export async function deleteLink(id: number) {
 }
 
 export async function addPage(formData: FormData) {
-  requireAuth()
+  await requireAuth()
   const title = formData.get('title') as string
   const slug = formData.get('slug') as string
   
@@ -93,7 +94,7 @@ export async function addPage(formData: FormData) {
 }
 
 export async function deletePage(id: number) {
-  requireAuth()
+  await requireAuth()
   await prisma.page.delete({
     where: { id }
   })
