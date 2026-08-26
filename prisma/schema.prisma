@@ -7,11 +7,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Page {
+  id        Int      @id @default(autoincrement())
+  slug      String   @unique // e.g., 'youtube'
+  title     String           // e.g., 'My YouTube Links'
+  links     Link[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Link {
   id        Int      @id @default(autoincrement())
   title     String
   url       String
   order     Int      @default(0)
+  pageId    Int?     // If null, it belongs to the main page
+  page      Page?    @relation(fields: [pageId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

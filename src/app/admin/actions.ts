@@ -6,11 +6,15 @@ import { revalidatePath } from 'next/cache'
 export async function addLink(formData: FormData) {
   const title = formData.get('title') as string
   const url = formData.get('url') as string
+  const pageIdStr = formData.get('pageId') as string
   
   if (!title || !url) throw new Error('Заполните все поля')
 
+  const pageId = pageIdStr ? parseInt(pageIdStr, 10) : null
+
   // Get max order
   const maxOrderLink = await prisma.link.findFirst({
+    where: { pageId },
     orderBy: { order: 'desc' }
   })
   
@@ -20,12 +24,12 @@ export async function addLink(formData: FormData) {
     data: {
       title,
       url,
-      order: nextOrder
+      order: nextOrder,
+      pageId
     }
   })
   
-  revalidatePath('/')
-  revalidatePath('/admin')
+  revalidatePath('/', 'layout')
 }
 
 export async function updateLink(id: number, formData: FormData) {
@@ -39,8 +43,7 @@ export async function updateLink(id: number, formData: FormData) {
     data: { title, url }
   })
   
-  revalidatePath('/')
-  revalidatePath('/admin')
+  revalidatePath('/', 'layout')
 }
 
 export async function deleteLink(id: number) {
@@ -48,6 +51,29 @@ export async function deleteLink(id: number) {
     where: { id }
   })
   
-  revalidatePath('/')
-  revalidatePath('/admin')
+  revalidatePath('/', 'layout')
+}
+
+export async function addPage(formData: FormData) {
+  const title = formData.get('title') as string
+  const slug = formData.get('slug') as string
+  
+  if (!title || !slug) throw new Error('Заполните все поля')
+
+  await prisma.page.create({
+    data: {
+      title,
+      slug: slug.toLowerCase().replace(/[^a-z0-9-]/g, '-')
+    }
+  })
+  
+  revalidatePath('/', 'layout')
+}
+
+export async function deletePage(id: number) {
+  await prisma.page.delete({
+    where: { id }
+  })
+  
+  revalidatePath('/', 'layout')
 }
