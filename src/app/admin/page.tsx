@@ -55,7 +55,7 @@ export default async function AdminPage() {
               />
               <input 
                 name="url" 
-                type="url" 
+                type="text" 
                 placeholder="URL (напр. https://t.me/...)" 
                 required 
                 className="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500"
@@ -82,7 +82,7 @@ export default async function AdminPage() {
                     />
                     <input 
                       name="url" 
-                      type="url" 
+                      type="text" 
                       defaultValue={link.url} 
                       required 
                       className="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500"
@@ -160,7 +160,7 @@ export default async function AdminPage() {
                     />
                     <input 
                       name="url" 
-                      type="url" 
+                      type="text" 
                       placeholder="URL" 
                       required 
                       className="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500 text-sm"

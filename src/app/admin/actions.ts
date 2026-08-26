@@ -11,11 +11,19 @@ function requireAuth() {
   }
 }
 
+function normalizeUrl(url: string) {
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    return 'https://' + url
+  }
+  return url
+}
+
 export async function addLink(formData: FormData) {
   requireAuth()
   
   const title = formData.get('title') as string
-  const url = formData.get('url') as string
+  let url = formData.get('url') as string
+  url = normalizeUrl(url)
   const pageIdStr = formData.get('pageId') as string
   
   if (!title || !url) throw new Error('Заполните все поля')
@@ -45,7 +53,8 @@ export async function addLink(formData: FormData) {
 export async function updateLink(id: number, formData: FormData) {
   requireAuth()
   const title = formData.get('title') as string
-  const url = formData.get('url') as string
+  let url = formData.get('url') as string
+  url = normalizeUrl(url)
   
   if (!title || !url) throw new Error('Заполните все поля')
 
